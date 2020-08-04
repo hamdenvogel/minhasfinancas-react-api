@@ -1,6 +1,11 @@
 import React from 'react';
 import Card from '../components/card';
 import FormGroup from '../components/form-group';
+import {withRouter} from 'react-router-dom';
+import UsuarioService from '../app/service/usuarioService';
+import { mensagemErro} from '../components/toastr';
+import { AuthContext } from '../main/provedorAutenticacao';
+
 
 
 class Login extends React.Component {
@@ -9,18 +14,64 @@ class Login extends React.Component {
         senha: ''
     }
 
+    constructor(){
+        super();
+        this.service = new UsuarioService();
+    }
+
     entrar = () => {
-        console.log('email ',this.state.email);
-        console.log('senha ',this.state.senha);
+        this.service.autenticar({
+            email: this.state.email,
+            senha: this.state.senha
+        }).then( response => {
+            this.context.iniciarSessao(response.data);
+            this.props.history.push('/home')
+        }).catch(erro => {
+            mensagemErro(erro.response.data);   
+        })    
+    }
+
+    /*
+    entrar = async () => {
+       try {
+        const response = await axios.post('http://localhost:8080/api/usuarios/autenticar',{
+            email: this.state.email,
+            senha: this.state.senha
+        });
+        console.log('resposta ', response);
+        console.log('requisição encerrada');
+
+        } catch (erro) {
+            console.log(erro.response);
+        }        
+    }
+    */
+   /*
+   entrar = async () => {
+     axios.post('http://localhost:8080/api/usuarios/autenticar',{
+         email: this.state.email,
+         senha: this.state.senha
+     }).then( response => {
+         localStorage.setItem('_usuario_logado', JSON.stringify(response.data));
+         this.props.history.push('/home')
+     }).catch(erro => {
+         console.log('entrou no erro');
+         this.setState({mensagemErro: erro.response.data})
+     })    
+ }
+*/
+
+
+    prepareCadastrar = () => {
+        this.props.history.push('/cadastro-usuarios');        
     }
 
     render() {
         return (
-            <div className="container">
                 <div className="row">
                     <div className="col-md-6" style={{position: 'relative', left: '300px'}}>
                         <div className="bs-docs-section">
-                            <Card title="Login">
+                           <Card title="Login">                            
                             <div className="row">
                               <div className="col-lg-12">
                                  <div className="bs-component">                                   
@@ -42,9 +93,13 @@ class Login extends React.Component {
                                             id="exampleInputPassword1" 
                                             placeholder="Password" />
                                         </FormGroup>
-                                        <button onClick={this.entrar} className="btn btn-success mr-1">Entrar</button>
+                                        <button onClick={this.entrar} 
+                                        className="btn btn-success mr-1">
+                                        <i className="pi pi-sign-in" style={{'fontSize': '0.8em'}}></i>  Entrar</button>
                                         
-                                        <button className="btn btn-danger mr-1">Cadastrar</button>
+                                        <button onClick={this.prepareCadastrar}
+                                        className="btn btn-danger mr-1">
+                                        <i className="pi pi-plus" style={{'fontSize': '0.8em'}}></i>  Cadastrar</button>
       
                                     </fieldset>
                                   </div>
@@ -55,9 +110,11 @@ class Login extends React.Component {
 
                     </div>
                 </div>
-            </div>
+        
         )
     }
 }
 
-export default Login
+Login.contextType = AuthContext;
+//export default Login
+export default withRouter(Login);
