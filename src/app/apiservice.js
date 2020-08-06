@@ -8,7 +8,7 @@ const httpClient = axios.create({
 class ApiService {
 
     constructor(apiurl){
-        this.apiurl = apiurl;
+        this.apiurl = apiurl;       
     }
 
     post(url, objeto){

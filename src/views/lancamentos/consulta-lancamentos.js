@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import Card from '../../components/card';
 import FormGroup from '../../components/form-group';
 import SelectMenu from '../../components/selectMenu';
