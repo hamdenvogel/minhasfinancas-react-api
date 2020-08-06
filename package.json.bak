@@ -2,7 +2,7 @@
   "name": "minhas-financas-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  
   "dependencies": {
     "axios": "^0.19.2",
     "bootswatch": "^4.5.0",
